@@ -18,10 +18,14 @@
     <p>Score: {{ active }}/{{ randomQuestions.length }}</p>
     <v-btn @click="reset()">Réessayer</v-btn>
   </v-sheet>
+  <v-dialog v-model="dialog" persistent>
+    <explanations :title="randomQuestions[active].title" :data="randomQuestions[active].data.explanations" @close="handleAnswerModalClose" />
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import Explanations from '../components/Explanations.vue';
 import questions from '../static/questions.json';
 
 const active = ref(0);
@@ -32,6 +36,8 @@ const minutes = computed(() => {
 const done = ref(false);
 const over = ref(false);
 const timer = ref<NodeJS.Timeout>(null!);
+const dialog = ref(false);
+const truth = ref(false);
 
 const randomQuestions = ref(questions);
 
@@ -44,19 +50,31 @@ const shuffleQuestions = () => {
   }));
 };
 
-const handleAnswer = ({ truth }) => {
-  if (truth) {
+const handleAnswer = (ans) => {
+  dialog.value = true;
+  truth.value = ans?.truth ?? false;
+  clearInterval(timer.value);
+};
+
+const handleAnswerModalClose = () => {
+  dialog.value = false;
+  if (truth.value) {
     active.value++;
     if (active.value == randomQuestions.value.length) {
       done.value = true;
       over.value = true;
-      clearInterval(timer.value);
     } else {
       seconds.value = 30;
+      timer.value = setInterval(() => {
+      seconds.value--;
+      if (seconds.value == 0) {
+        over.value = true;
+        clearInterval(timer.value);
+      }
+    }, 1000);
     }
   } else {
     over.value = true;
-    clearInterval(timer.value);
   }
 };
 
