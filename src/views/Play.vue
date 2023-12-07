@@ -19,7 +19,7 @@
     <v-btn @click="reset()">Réessayer</v-btn>
   </v-sheet>
   <v-dialog v-model="dialog" persistent>
-    <explanations :title="randomQuestions[active].title" :data="randomQuestions[active].data.explanations" @close="handleAnswerModalClose" />
+    <explanations :title="randomQuestions[active]?.title" :data="randomQuestions[active]?.data.explanations" @close="handleAnswerModalClose" />
   </v-dialog>
 </template>
 
@@ -60,7 +60,7 @@ const handleAnswerModalClose = () => {
   dialog.value = false;
   if (truth.value) {
     active.value++;
-    if (active.value == randomQuestions.value.length) {
+    if (active.value == randomQuestions.value?.length) {
       done.value = true;
       over.value = true;
     } else {
