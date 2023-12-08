@@ -2,16 +2,16 @@ import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router'
 
 const routes: RouteRecordRaw[] = [
   {
-    path: '/',
+    path: '/home_page',
     component: () => import('@/layouts/default/Default.vue'),
     children: [
       {
-        path: '',
+        path: '/',
         name: 'Home',
         component: () => import('@/views/Home.vue'),
       },
       {
-        path: 'play',
+        path: '/play',
         name: 'Play',
         component: () => import('@/views/Play.vue'),
       },
